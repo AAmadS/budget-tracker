@@ -1,26 +1,104 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background-color: #faf9f6;
+  color: #1f2937;
 }
+
+
+/* Page layout */
+.auth-page {
+  @apply flex min-h-screen items-center justify-center px-4;
+}
+
+/* Cards */
+.auth-card {
+  @apply w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 shadow-sm;
+}
+
+/* Text */
+.auth-title {
+  @apply text-3xl font-semibold text-gray-900;
+}
+
+.auth-subtitle {
+  @apply mt-2 text-sm text-gray-500;
+}
+
+/* Forms */
+.form-group {
+  @apply space-y-5;
+}
+
+.form-label {
+  @apply mb-2 block text-sm font-medium text-gray-700;
+}
+
+.form-input {
+  @apply w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-teal-700;
+}
+
+/* Buttons */
+.btn-primary {
+  @apply w-full rounded-lg bg-teal-700 px-4 py-3 font-medium text-white hover:bg-teal-800;
+}
+
+/* Links */
+.auth-link {
+  @apply font-medium text-teal-700 hover:underline;
+}
+
+/* Dashboard layout */
+.dashboard-layout {
+  @apply flex min-h-screen bg-[#f7f6f2];
+}
+
+.sidebar {
+  @apply fixed top-0 left-0 flex h-screen w-60 flex-col justify-between border-r border-gray-200 bg-white p-5;
+}
+
+.sidebar-brand {
+  @apply text-xl font-bold text-teal-900;
+}
+
+.sidebar-workspace {
+  @apply mt-8 mb-6 text-sm font-medium text-gray-700;
+}
+
+.sidebar-caption {
+  @apply mb-2 text-xs font-medium text-gray-400;
+}
+
+.sidebar-navigation {
+  @apply flex flex-col gap-2;
+}
+
+.sidebar-link {
+  @apply rounded-lg px-4 py-3 text-sm text-gray-600 hover:bg-gray-100;
+}
+
+.sidebar-link-active {
+  @apply bg-teal-50 font-semibold text-teal-800;
+}
+
+.sidebar-footer {
+  @apply mt-8 border-t border-gray-100 pt-4;
+}
+
+.sidebar-logout {
+  @apply cursor-pointer text-sm font-medium text-teal-700 hover:underline disabled:opacity-50;
+}
+
+.dashboard-main {
+  @apply ml-60 min-w-0 flex-1;
+}
+
+.dashboard-header {
+  @apply border-b border-gray-200 bg-white px-6 py-5;
+}
+
+.dashboard-content {
+  @apply p-6 md:p-8;
+}
+
