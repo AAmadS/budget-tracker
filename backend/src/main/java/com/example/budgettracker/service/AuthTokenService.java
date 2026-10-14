@@ -43,7 +43,7 @@ public class AuthTokenService {
     }
 
     public void logout(String authorization) {
-        Long userId = validateToken(authorization);
+        validateToken(authorization);
         String token = authorization.substring(7);
         tokens.remove(token);
     }

@@ -100,69 +100,67 @@ public class UserService {
         return user;
     }
 
-
-public User getUserById(Long userId) {
-    return userRepository.findById(userId)
-        .orElseThrow(() -> new ResponseStatusException(
-            HttpStatus.NOT_FOUND,
-            "User not found"
-        ));
-}
-
-public User updateUser(Long userId, UpdateUserProfileRequest request) {
-
-    User user = getUserById(userId);
-
-    if (request.getFirstName() != null) {
-        if (request.getFirstName().isBlank()) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "First name cannot be blank");
-        }
-        user.setFirstName(request.getFirstName().trim());
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "User not found"));
     }
 
-    if (request.getLastName() != null) {
-        if (request.getLastName().isBlank()) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "Last name cannot be blank");
-        }
-        user.setLastName(request.getLastName().trim());
-    }
+    public User updateUser(Long userId, UpdateUserProfileRequest request) {
 
-    if (request.getEmail() != null) {
-        String email = request.getEmail().trim().toLowerCase();
+        User user = getUserById(userId);
 
-        if (email.isBlank()) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "Email cannot be blank");
+        if (request.getFirstName() != null) {
+            if (request.getFirstName().isBlank()) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "First name cannot be blank");
+            }
+            user.setFirstName(request.getFirstName().trim());
         }
 
-        User existing = userRepository.findByEmail(email).orElse(null);
-
-        if (existing != null && !existing.getId().equals(userId)) {
-            throw new ResponseStatusException(
-                HttpStatus.CONFLICT, "Email is already registered");
+        if (request.getLastName() != null) {
+            if (request.getLastName().isBlank()) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Last name cannot be blank");
+            }
+            user.setLastName(request.getLastName().trim());
         }
 
-        user.setEmail(email);
-    }
+        if (request.getEmail() != null) {
+            String email = request.getEmail().trim().toLowerCase();
 
-    if (request.getPassword() != null) {
-        if (request.getPassword().length() < 8) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Password must be at least 8 characters");
+            if (email.isBlank()) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Email cannot be blank");
+            }
+
+            User existing = userRepository.findByEmail(email).orElse(null);
+
+            if (existing != null && !existing.getId().equals(userId)) {
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT, "Email is already registered");
+            }
+
+            user.setEmail(email);
         }
 
-        user.setPassword(request.getPassword());
-    }
+        if (request.getPassword() != null) {
+            if (request.getPassword().length() < 8) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Password must be at least 8 characters");
+            }
 
-    if (request.getPhoneNumber() != null) {
-        String phone = request.getPhoneNumber().trim();
-        user.setPhoneNumber(phone.isEmpty() ? null : phone);
-    }
+            user.setPassword(request.getPassword());
+        }
 
-    return userRepository.save(user);
-}
+        if (request.getPhoneNumber() != null) {
+            String phone = request.getPhoneNumber().trim();
+            user.setPhoneNumber(phone.isEmpty() ? null : phone);
+        }
+
+        return userRepository.save(user);
+    }
 
 }
