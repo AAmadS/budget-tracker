@@ -10,17 +10,17 @@ export default function SettingsPage() {
     const [activeTab, setActiveTab] = useState("profile");
 
     return (
-        <div>
-            <h1 className="text-3xl font-semibold text-teal-950">
-                Settings
-            </h1>
+        <div className="settings-page">
+            <h1>Settings</h1>
 
-            <p className="mt-2 text-gray-500">
+            <p>
                 Manage your personal information and accounts.
             </p>
 
+            {/* Settings navigation tabs */}
             <div className="settings-tabs">
                 <button
+                    type="button"
                     className={activeTab === "profile" ? "settings-tab-active" : ""}
                     onClick={() => setActiveTab("profile")}
                 >
@@ -28,6 +28,7 @@ export default function SettingsPage() {
                 </button>
 
                 <button
+                    type="button"
                     className={activeTab === "accounts" ? "settings-tab-active" : ""}
                     onClick={() => setActiveTab("accounts")}
                 >

@@ -1,107 +1,215 @@
+
 @import "tailwindcss";
 
+/* ========================================
+   GLOBAL
+======================================== */
+
 body {
-  margin: 0;
-  background-color: #faf9f6;
-  color: #1f2937;
+    margin: 0;
+    background-color: #faf9f6;
+    color: #1f2937;
 }
 
 
-/* Page layout */
-.auth-page {
-  @apply flex min-h-screen items-center justify-center px-4;
-}
-
-/* Cards */
-.auth-card {
-  @apply w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 shadow-sm;
-}
-
-/* Text */
-.auth-title {
-  @apply text-3xl font-semibold text-gray-900;
-}
-
-.auth-subtitle {
-  @apply mt-2 text-sm text-gray-500;
-}
+/* ========================================
+   SHARED COMPONENTS
+======================================== */
 
 /* Forms */
 .form-group {
-  @apply space-y-5;
+    @apply space-y-5;
+}
+
+.form-group h3 {
+    @apply text-lg font-semibold;
 }
 
 .form-label {
-  @apply mb-2 block text-sm font-medium text-gray-700;
+    @apply mb-2 block text-sm font-medium text-gray-700;
 }
 
 .form-input {
-  @apply w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-teal-700;
+    @apply w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-teal-700;
+}
+
+.form-hint {
+    @apply mt-1 text-xs text-gray-500;
 }
 
 /* Buttons */
 .btn-primary {
-  @apply w-full rounded-lg bg-teal-700 px-4 py-3 font-medium text-white hover:bg-teal-800;
+    @apply w-full rounded-lg bg-teal-700 px-4 py-3 font-medium text-white hover:bg-teal-800;
 }
 
-/* Links */
+/* Cards */
+.settings-card,
+.profile-card {
+    @apply rounded-xl border border-gray-200 bg-white p-6;
+}
+
+/* Tables */
+.data-table {
+    @apply w-full text-left text-sm;
+}
+
+.data-table thead tr {
+    @apply border-b border-gray-200;
+}
+
+.data-table tbody tr {
+    @apply border-b border-gray-100;
+}
+
+.data-table th,
+.data-table td {
+    @apply py-3;
+}
+
+/* Table actions */
+.data-table td button {
+    @apply mr-3 cursor-pointer disabled:opacity-50;
+}
+
+.action-edit {
+    @apply text-teal-700;
+}
+
+.action-delete {
+    @apply text-red-600;
+}
+
+/* Feedback messages */
+.error-message {
+    @apply mt-2 mb-3 text-sm text-red-600;
+}
+
+.success-message {
+    @apply text-sm text-teal-700;
+}
+
+.empty-message {
+    @apply text-gray-500;
+}
+
+
+/* ========================================
+   AUTHENTICATION
+======================================== */
+
+/* Page layout */
+.auth-page {
+    @apply flex min-h-screen items-center justify-center px-4;
+}
+
+.auth-card {
+    @apply w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 shadow-sm;
+}
+
+/* Headings */
+.auth-heading {
+    @apply mb-8 text-center;
+}
+
+.auth-title {
+    @apply text-3xl font-semibold text-gray-900;
+}
+
+.auth-subtitle {
+    @apply mt-2 text-sm text-gray-500;
+}
+
+/* Links and footer */
 .auth-link {
-  @apply font-medium text-teal-700 hover:underline;
+    @apply font-medium text-teal-700 hover:underline;
 }
 
-/* Dashboard layout */
+.auth-footer {
+    @apply mt-6 text-center text-sm text-gray-600;
+}
+
+
+/* ========================================
+   DASHBOARD LAYOUT
+======================================== */
+
 .dashboard-layout {
-  @apply flex min-h-screen bg-[#f7f6f2];
-}
-
-.sidebar {
-  @apply fixed top-0 left-0 flex h-screen w-60 flex-col justify-between border-r border-gray-200 bg-white p-5;
-}
-
-.sidebar-brand {
-  @apply text-xl font-bold text-teal-900;
-}
-
-.sidebar-workspace {
-  @apply mt-8 mb-6 text-sm font-medium text-gray-700;
-}
-
-.sidebar-caption {
-  @apply mb-2 text-xs font-medium text-gray-400;
-}
-
-.sidebar-navigation {
-  @apply flex flex-col gap-2;
-}
-
-.sidebar-link {
-  @apply rounded-lg px-4 py-3 text-sm text-gray-600 hover:bg-gray-100;
-}
-
-.sidebar-link-active {
-  @apply bg-teal-50 font-semibold text-teal-800;
-}
-
-.sidebar-footer {
-  @apply mt-8 border-t border-gray-100 pt-4;
-}
-
-.sidebar-logout {
-  @apply cursor-pointer text-sm font-medium text-teal-700 hover:underline disabled:opacity-50;
+    @apply flex min-h-screen bg-[#f7f6f2];
 }
 
 .dashboard-main {
-  @apply ml-60 min-w-0 flex-1;
+    @apply ml-60 min-w-0 flex-1;
 }
 
 .dashboard-header {
-  @apply border-b border-gray-200 bg-white px-6 py-5;
+    @apply border-b border-gray-200 bg-white px-6 py-5;
+}
+
+.dashboard-header p {
+    @apply text-sm text-gray-500;
 }
 
 .dashboard-content {
-  @apply p-6 md:p-8;
+    @apply p-6 md:p-8;
 }
 
+
+/* ========================================
+   SIDEBAR
+======================================== */
+
+.sidebar {
+    @apply fixed top-0 left-0 flex h-screen w-60 flex-col justify-between border-r border-gray-200 bg-white p-5;
+}
+
+.sidebar-brand {
+    @apply text-xl font-bold text-teal-900;
+}
+
+.sidebar-workspace {
+    @apply mt-8 mb-6 text-sm font-medium text-gray-700;
+}
+
+.sidebar-caption {
+    @apply mb-2 text-xs font-medium text-gray-400;
+}
+
+.sidebar-navigation {
+    @apply flex flex-col gap-2;
+}
+
+.sidebar-link {
+    @apply rounded-lg px-4 py-3 text-sm text-gray-600 hover:bg-gray-100;
+}
+
+.sidebar-link-active {
+    @apply bg-teal-50 font-semibold text-teal-800;
+}
+
+.sidebar-footer {
+    @apply mt-8 border-t border-gray-100 pt-4;
+}
+
+.sidebar-logout {
+    @apply cursor-pointer text-sm font-medium text-teal-700 hover:underline disabled:opacity-50;
+}
+
+
+/* ========================================
+   SETTINGS
+======================================== */
+
+/* Page heading */
+.settings-page h1 {
+    @apply text-3xl font-semibold text-teal-950;
+}
+
+/* Only direct paragraphs inside settings-page */
+.settings-page > p {
+    @apply mt-2 text-gray-500;
+}
+
+/* Tabs */
 .settings-tabs {
     @apply mt-6 mb-6 flex gap-3 border-b border-gray-200;
 }
@@ -114,3 +222,49 @@ body {
     @apply border-teal-700! text-teal-800!;
 }
 
+/* Responsive card layout */
+.settings-card-grid {
+    @apply mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2;
+}
+
+.settings-card {
+    @apply min-w-0;
+}
+
+/* Profile */
+.profile-card {
+    @apply mt-8 max-w-2xl;
+}
+
+.profile-card h2 {
+    @apply mb-6 text-xl font-semibold;
+}
+
+
+/* ========================================
+   CATEGORIES & ACCOUNTS
+======================================== */
+
+/* Category management */
+.category-list {
+    @apply w-full;
+}
+
+.category-list form {
+    @apply mb-6;
+}
+
+.category-list form .btn-primary {
+    @apply mt-3;
+}
+
+/* Account management */
+.account-list {
+    @apply mt-8;
+}
+
+/* Shared section headings */
+.category-list h2,
+.account-list h2 {
+    @apply mb-4 text-xl font-semibold;
+}

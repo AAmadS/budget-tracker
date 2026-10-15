@@ -102,104 +102,113 @@ export default function ProfileSettings() {
     }
 
     return (
-        <div>
-            <section className="mt-8 max-w-2xl rounded-xl border border-gray-200 bg-white p-6">
-                <h2 className="mb-6 text-xl font-semibold">Profile information</h2>
+        <section className="profile-card">
+            <h2>Profile information</h2>
 
-                <form onSubmit={handleSave} className="form-group">
-                    <div>
-                        <label htmlFor="firstName" className="form-label">
-                            First name
-                        </label>
-                        <input
-                            id="firstName"
-                            className="form-input"
-                            required
-                            value={profile.firstName}
-                            onChange={(event) =>
-                                setProfile({ ...profile, firstName: event.target.value })
-                            }
-                        />
-                    </div>
+            <form onSubmit={handleSave} className="form-group">
+                {/* First name */}
+                <div>
+                    <label htmlFor="firstName" className="form-label">
+                        First name
+                    </label>
+                    <input
+                        id="firstName"
+                        className="form-input"
+                        required
+                        value={profile.firstName}
+                        onChange={(event) =>
+                            setProfile({ ...profile, firstName: event.target.value })
+                        }
+                    />
+                </div>
 
-                    <div>
-                        <label htmlFor="lastName" className="form-label">
-                            Last name
-                        </label>
-                        <input
-                            id="lastName"
-                            className="form-input"
-                            required
-                            value={profile.lastName}
-                            onChange={(event) =>
-                                setProfile({ ...profile, lastName: event.target.value })
-                            }
-                        />
-                    </div>
+                {/* Last name */}
+                <div>
+                    <label htmlFor="lastName" className="form-label">
+                        Last name
+                    </label>
+                    <input
+                        id="lastName"
+                        className="form-input"
+                        required
+                        value={profile.lastName}
+                        onChange={(event) =>
+                            setProfile({ ...profile, lastName: event.target.value })
+                        }
+                    />
+                </div>
 
-                    <div>
-                        <label htmlFor="email" className="form-label">
-                            Email
-                        </label>
-                        <input
-                            id="email"
-                            type="email"
-                            className="form-input"
-                            required
-                            value={profile.email}
-                            onChange={(event) =>
-                                setProfile({ ...profile, email: event.target.value })
-                            }
-                        />
-                    </div>
+                {/* Email */}
+                <div>
+                    <label htmlFor="email" className="form-label">
+                        Email
+                    </label>
+                    <input
+                        id="email"
+                        type="email"
+                        className="form-input"
+                        required
+                        value={profile.email}
+                        onChange={(event) =>
+                            setProfile({ ...profile, email: event.target.value })
+                        }
+                    />
+                </div>
 
-                    <div>
-                        <label htmlFor="phoneNumber" className="form-label">
-                            Phone number
-                        </label>
-                        <input
-                            id="phoneNumber"
-                            type="tel"
-                            className="form-input"
-                            value={profile.phoneNumber ?? ""}
-                            onChange={(event) =>
-                                setProfile({ ...profile, phoneNumber: event.target.value })
-                            }
-                        />
-                    </div>
+                {/* Phone number */}
+                <div>
+                    <label htmlFor="phoneNumber" className="form-label">
+                        Phone number
+                    </label>
+                    <input
+                        id="phoneNumber"
+                        type="tel"
+                        className="form-input"
+                        value={profile.phoneNumber ?? ""}
+                        onChange={(event) =>
+                            setProfile({ ...profile, phoneNumber: event.target.value })
+                        }
+                    />
+                </div>
 
-                    <div>
-                        <label htmlFor="password" className="form-label">
-                            New password (optional)
-                        </label>
-                        <input
-                            id="password"
-                            type="password"
-                            minLength={8}
-                            className="form-input"
-                            placeholder="Leave blank to keep your current password"
-                            value={password}
-                            onChange={(event) => setPassword(event.target.value)}
-                        />
-                    </div>
+                {/* Optional password update */}
+                <div>
+                    <label htmlFor="password" className="form-label">
+                        New password (optional)
+                    </label>
+                    <input
+                        id="password"
+                        type="password"
+                        minLength={8}
+                        className="form-input"
+                        placeholder="Leave blank to keep your current password"
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
+                    />
+                </div>
 
-                    {error && (
-                        <p role="alert" className="text-sm text-red-600">
-                            {error}
-                        </p>
-                    )}
+                {/* Error message */}
+                {error && (
+                    <p role="alert" className="error-message">
+                        {error}
+                    </p>
+                )}
 
-                    {message && (
-                        <p role="status" className="text-sm text-teal-700">
-                            {message}
-                        </p>
-                    )}
+                {/* Success message */}
+                {message && (
+                    <p role="status" className="success-message">
+                        {message}
+                    </p>
+                )}
 
-                    <button type="submit" className="btn-primary" disabled={saving}>
-                        {saving ? "Saving..." : "Save changes"}
-                    </button>
-                </form>
-            </section>
-        </div>
+                <button
+                    type="submit"
+                    className="btn-primary"
+                    disabled={saving}
+                >
+                    {saving ? "Saving..." : "Save changes"}
+                </button>
+            </form>
+        </section>
     );
 }

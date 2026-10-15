@@ -61,14 +61,19 @@ export default function SignupPage() {
     return (
         <main className="auth-page">
             <div className="auth-card">
-                <div className="mb-8 text-center">
+
+                {/* Page heading */}
+                <div className="auth-heading">
                     <h1 className="auth-title">Create an account</h1>
                     <p className="auth-subtitle">
                         Start managing your budget
                     </p>
                 </div>
 
+                {/* Signup form */}
                 <form onSubmit={handleSignup} className="form-group">
+
+                    {/* First name */}
                     <div>
                         <label htmlFor="firstName" className="form-label">
                             First name
@@ -83,6 +88,7 @@ export default function SignupPage() {
                         />
                     </div>
 
+                    {/* Last name */}
                     <div>
                         <label htmlFor="lastName" className="form-label">
                             Last name
@@ -97,6 +103,7 @@ export default function SignupPage() {
                         />
                     </div>
 
+                    {/* Email */}
                     <div>
                         <label htmlFor="email" className="form-label">
                             Email
@@ -111,6 +118,7 @@ export default function SignupPage() {
                         />
                     </div>
 
+                    {/* Phone number */}
                     <div>
                         <label htmlFor="phoneNumber" className="form-label">
                             Phone number (optional)
@@ -124,6 +132,7 @@ export default function SignupPage() {
                         />
                     </div>
 
+                    {/* Password */}
                     <div>
                         <label htmlFor="password" className="form-label">
                             Password
@@ -137,17 +146,19 @@ export default function SignupPage() {
                             value={password}
                             onChange={(event) => setPassword(event.target.value)}
                         />
-                        <p className="mt-1 text-xs text-gray-500">
+                        <p className="form-hint">
                             Must be at least 8 characters.
                         </p>
                     </div>
 
+                    {/* Error message */}
                     {error && (
-                        <p className="text-sm text-red-600" role="alert">
+                        <p className="error-message" role="alert">
                             {error}
                         </p>
                     )}
 
+                    {/* Submit button */}
                     <button
                         type="submit"
                         className="btn-primary"
@@ -157,7 +168,8 @@ export default function SignupPage() {
                     </button>
                 </form>
 
-                <p className="mt-6 text-center text-sm text-gray-600">
+                {/* Link to login page */}
+                <p className="auth-footer">
                     Already have an account?{" "}
                     <Link href="/login" className="auth-link">
                         Log in

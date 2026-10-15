@@ -66,12 +66,14 @@ export default function DashboardLayout({
             <Sidebar />
 
             <div className="dashboard-main">
+                {/* Dashboard header */}
                 <header className="dashboard-header">
-                    <p className="text-sm text-gray-500">
+                    <p>
                         Welcome back, {user.firstName}!
                     </p>
                 </header>
 
+                {/* Main content for each dashboard page */}
                 <main className="dashboard-content">
                     {children}
                 </main>

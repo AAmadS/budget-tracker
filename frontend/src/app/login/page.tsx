@@ -51,14 +51,19 @@ export default function LoginPage() {
     return (
         <main className="auth-page">
             <div className="auth-card">
-                <div className="mb-8 text-center">
+
+                {/* Page heading */}
+                <div className="auth-heading">
                     <h1 className="auth-title">Welcome back</h1>
                     <p className="auth-subtitle">
                         Log in to manage your budget
                     </p>
                 </div>
 
+                {/* Login form */}
                 <form onSubmit={handleLogin} className="form-group">
+
+                    {/* Email */}
                     <div>
                         <label htmlFor="email" className="form-label">
                             Email
@@ -75,6 +80,7 @@ export default function LoginPage() {
                         />
                     </div>
 
+                    {/* Password */}
                     <div>
                         <label htmlFor="password" className="form-label">
                             Password
@@ -91,12 +97,14 @@ export default function LoginPage() {
                         />
                     </div>
 
+                    {/* Error message */}
                     {error && (
-                        <p className="text-sm text-red-600" role="alert">
+                        <p className="error-message" role="alert">
                             {error}
                         </p>
                     )}
 
+                    {/* Submit button */}
                     <button
                         type="submit"
                         className="btn-primary"
@@ -106,7 +114,8 @@ export default function LoginPage() {
                     </button>
                 </form>
 
-                <p className="mt-6 text-center text-sm text-gray-600">
+                {/* Link to signup page */}
+                <p className="auth-footer">
                     Don&apos;t have an account?{" "}
                     <Link href="/signup" className="auth-link">
                         Sign up

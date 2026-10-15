@@ -67,6 +67,7 @@ export default function AddAccountForm({
         <form onSubmit={handleSubmit} className="form-group">
             <h3>Add Account</h3>
 
+            {/* Account name */}
             <div>
                 <label htmlFor="accountName" className="form-label">
                     Account name
@@ -81,6 +82,7 @@ export default function AddAccountForm({
                 />
             </div>
 
+            {/* Account type */}
             <div>
                 <label htmlFor="accountType" className="form-label">
                     Account type
@@ -98,6 +100,7 @@ export default function AddAccountForm({
                 </select>
             </div>
 
+            {/* Starting balance */}
             <div>
                 <label htmlFor="balance" className="form-label">
                     Starting balance
@@ -113,14 +116,16 @@ export default function AddAccountForm({
                 />
             </div>
 
+            {/* Error message */}
             {error && (
-                <p role="alert" className="text-sm text-red-600">
+                <p role="alert" className="error-message">
                     {error}
                 </p>
             )}
 
+            {/* Success message */}
             {message && (
-                <p role="status" className="text-sm text-teal-700">
+                <p role="status" className="success-message">
                     {message}
                 </p>
             )}
