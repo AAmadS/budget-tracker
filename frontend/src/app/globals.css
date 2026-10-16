@@ -404,3 +404,116 @@ body {
 .transactions-pagination-buttons button {
     @apply cursor-pointer rounded-lg border border-gray-300 px-3 py-2 font-medium hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40;
 }
+
+/* ========================================
+        Budgets page
+======================================== */
+
+/* Page layout */
+.budgets-page {
+    @apply space-y-6;
+}
+
+.budgets-page h1 {
+    @apply text-2xl font-bold;
+}
+
+/* Create form on the left, budgets on the right */
+.budgets-layout {
+    @apply grid grid-cols-1 items-start gap-6 lg:grid-cols-2;
+}
+
+.budgets-layout > * {
+    @apply min-w-0;
+}
+
+/* Edit form appears above the budget list */
+.budgets-right-column {
+    @apply flex min-w-0 flex-col gap-6;
+}
+
+/* Budget sections */
+.budgets-form,
+.budgets-list,
+.budget-edit-form {
+    @apply rounded-lg border border-gray-200 bg-white p-5;
+}
+
+.budgets-form h2,
+.budgets-list h2,
+.budget-edit-form h2 {
+    @apply mb-4 text-lg font-semibold;
+}
+
+/* Forms */
+.budgets-form form,
+.budget-edit-form form {
+    @apply space-y-4;
+}
+
+.form-field {
+    @apply space-y-1;
+}
+
+.budgets-form .form-input,
+.budget-edit-form .form-input {
+    @apply w-full;
+}
+
+.budget-edit-form {
+    @apply w-full;
+}
+
+.budget-status-label {
+    @apply flex items-center gap-2;
+}
+
+/* Budget list */
+.budgets-grid {
+    @apply grid grid-cols-1 gap-4;
+}
+
+.budget-card {
+    @apply space-y-3 rounded-lg border border-gray-200 p-4;
+}
+
+.budget-card-header,
+.budget-amounts,
+.budget-actions {
+    @apply flex items-center justify-between gap-3;
+}
+
+.budget-card-header h3 {
+    @apply font-semibold;
+}
+
+.budget-card > p {
+    @apply text-sm text-gray-600;
+}
+
+/* Spending progress bar */
+.budget-progress {
+    @apply h-3 w-full overflow-hidden rounded-full bg-gray-200;
+}
+
+.budget-progress-fill {
+    @apply h-full rounded-full bg-teal-600;
+}
+
+.budget-progress-warning {
+    @apply bg-amber-500;
+}
+
+.budget-progress-over {
+    @apply bg-red-500;
+}
+
+/* Spending warnings */
+.budget-warning {
+    @apply font-medium text-amber-700;
+}
+
+/* Budget actions */
+.budget-delete-confirm {
+    @apply space-y-2 rounded-md bg-gray-50 p-3;
+}

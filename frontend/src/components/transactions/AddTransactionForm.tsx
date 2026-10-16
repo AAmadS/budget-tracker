@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState, type SubmitEvent } from "react";
 
 type TransactionType = "INCOME" | "EXPENSE";
 
@@ -92,7 +92,7 @@ export default function AddTransactionForm({
     }
 
     // Creates a transaction using the backend POST endpoint.
-    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
 
         if (submitting) return;
