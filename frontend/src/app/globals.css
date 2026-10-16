@@ -405,6 +405,17 @@ body {
     @apply cursor-pointer rounded-lg border border-gray-300 px-3 py-2 font-medium hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40;
 }
 
+.transactions-filters {
+    @apply mb-5 grid grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-5;
+}
+.transactions-filters .form-field {
+    @apply min-w-0;
+}
+.transactions-clear-filters {
+    @apply cursor-pointer rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50;
+}
+
+
 /* ========================================
         Budgets page
 ======================================== */
@@ -516,4 +527,69 @@ body {
 /* Budget actions */
 .budget-delete-confirm {
     @apply space-y-2 rounded-md bg-gray-50 p-3;
+}
+
+/* ========================================
+        Overview page
+======================================== */
+
+.overview-page {
+    @apply space-y-6;
+}
+
+.overview-page h1 {
+    @apply text-2xl font-bold;
+}
+
+.overview-summary {
+    @apply grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4;
+}
+
+.overview-card,
+.overview-report {
+    @apply rounded-lg border border-gray-200 bg-white p-5;
+}
+
+.overview-card {
+    @apply space-y-3;
+}
+
+.overview-card h2 {
+    @apply text-sm font-medium text-gray-600;
+}
+
+.overview-card strong {
+    @apply text-2xl font-bold;
+}
+
+.overview-report h2 {
+    @apply mb-4 text-lg font-semibold;
+}
+
+.overview-months {
+    @apply space-y-4;
+}
+
+.overview-month-label {
+    @apply mb-2 flex items-center justify-between gap-3 text-sm;
+}
+
+.overview-bar {
+    @apply h-3 w-full overflow-hidden rounded-full bg-gray-200;
+}
+
+.overview-bar-fill {
+    @apply h-full rounded-full bg-teal-600;
+}
+
+.overview-reports-grid {
+    @apply grid grid-cols-1 items-start gap-6 lg:grid-cols-2;
+}
+
+.overview-reports-grid > * {
+    @apply min-w-0;
+}
+
+.overview-budget-details {
+    @apply mt-1 text-xs text-gray-500;
 }

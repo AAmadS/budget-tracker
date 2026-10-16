@@ -8,7 +8,7 @@ const navigation = [
     { label: "Overview", href: "/overview" },
     { label: "Transactions", href: "/transactions" },
     { label: "Budgets", href: "/budgets" },
-    { label: "Reports", href: "/reports" },
+    { label: "Categories & Accounts", href: "/categories-accounts" },
     { label: "Settings", href: "/settings" },
 ];
 

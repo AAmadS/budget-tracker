@@ -1,25 +1,36 @@
 
 package com.example.budgettracker.service;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.budgettracker.dto.CreateUserRequest;
 import com.example.budgettracker.dto.LoginRequest;
 import com.example.budgettracker.dto.UpdateUserProfileRequest;
+import com.example.budgettracker.model.Category;
 import com.example.budgettracker.model.User;
+import com.example.budgettracker.repository.CategoryRepository;
 import com.example.budgettracker.repository.UserRepository;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(
+            UserRepository userRepository,
+            CategoryRepository categoryRepository) {
+
         this.userRepository = userRepository;
+        this.categoryRepository = categoryRepository;
     }
 
+    @Transactional
     public User createUser(CreateUserRequest request) {
 
         // Check required fields
@@ -69,11 +80,30 @@ public class UserService {
                 lastName,
                 phoneNumber);
 
-        return userRepository.save(newUser);
+        User savedUser = userRepository.save(newUser);
+
+        // Create default categories for the new user.
+        List<String> defaultCategoryNames = List.of(
+                "Groceries",
+                "Housing",
+                "Transportation",
+                "Utilities",
+                "Entertainment",
+                "Healthcare",
+                "Salary"
+        );
+
+        List<Category> defaultCategories = defaultCategoryNames.stream()
+                .map(name -> new Category(savedUser, name))
+                .toList();
+
+        categoryRepository.saveAll(defaultCategories);
+
+        return savedUser;
     }
 
-    // finds the user by email and verifies their password.
-    // Returns the user to the controller so to generate a token.
+    // Finds the user by email and verifies their password.
+    // Returns the user to the controller to generate a token.
     public User loginUser(LoginRequest request) {
 
         if (request == null
@@ -162,5 +192,4 @@ public class UserService {
 
         return userRepository.save(user);
     }
-
 }
