@@ -31,6 +31,9 @@ public class CategoryService {
     public CategoryResponse createCategory(Long userId, CategoryRequest request) {
         String name = validateName(request.getCategoryName());
 
+        // Rejects a duplicate category name for this user
+        checkDuplicateName(userId, name);
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "User not found"));
@@ -56,8 +59,14 @@ public class CategoryService {
             CategoryRequest request) {
 
         Category category = findUserCategory(userId, categoryId);
+        String name = validateName(request.getCategoryName());
 
-        category.setCategoryName(validateName(request.getCategoryName()));
+        // Only checks duplicates if the category name is changing
+        if (!category.getCategoryName().equalsIgnoreCase(name)) {
+            checkDuplicateName(userId, name);
+        }
+
+        category.setCategoryName(name);
 
         Category updatedCategory = categoryRepository.save(category);
 
@@ -85,7 +94,20 @@ public class CategoryService {
                     "Category name is required");
         }
 
+        // Removes surrounding spaces and repeated spaces between words
         return name.trim().replaceAll("\\s+", " ");
+    }
+
+    // Prevents users from creating categories with duplicate names
+    private void checkDuplicateName(Long userId, String name) {
+        boolean exists = categoryRepository
+                .existsByUser_IdAndCategoryNameIgnoreCase(userId, name);
+
+        if (exists) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "A category with this name already exists");
+        }
     }
 
     // Converts a database entity into a response DTO

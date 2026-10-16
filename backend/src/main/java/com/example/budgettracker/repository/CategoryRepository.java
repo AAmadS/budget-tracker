@@ -14,4 +14,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     // Finds one category only if the user owns it
     Optional<Category> findByIdAndUser_Id(Long categoryId, Long userId);
+
+    // Checks whether the user already has a category with this name
+    boolean existsByUser_IdAndCategoryNameIgnoreCase(Long userId, String categoryName);
 }

@@ -268,3 +268,139 @@ body {
 .account-list h2 {
     @apply mb-4 text-xl font-semibold;
 }
+
+
+/* ========================================
+   TRANSACTIONS
+======================================== */
+
+/* Page layout and headings */
+.transactions-page {
+    @apply flex flex-col gap-6;
+}
+
+.transactions-header h1 {
+    @apply text-3xl font-semibold text-teal-950;
+}
+
+.transactions-header p {
+    @apply mt-2 text-gray-500;
+}
+
+/* Cards and section headings */
+.transactions-form,
+.transactions-content {
+    @apply rounded-xl border border-gray-200 bg-white p-6;
+}
+
+.transactions-form h2,
+.transactions-content h2 {
+    @apply mb-6 text-xl font-semibold;
+}
+
+/* Add Transaction form */
+.transactions-form form {
+    @apply grid grid-cols-1 gap-5 md:grid-cols-2;
+}
+
+.transactions-form .form-field {
+    @apply flex flex-col;
+}
+
+.transactions-form label {
+    @apply mb-2 block text-sm font-medium text-gray-700;
+}
+
+.transactions-form .btn-primary {
+    @apply mt-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 md:col-span-2;
+}
+
+.transactions-form .error-message {
+    @apply md:col-span-2;
+}
+
+/* Transaction history table */
+.transactions-table-wrapper {
+    @apply w-full overflow-x-auto;
+}
+
+.transactions-table-wrapper .data-table {
+    @apply min-w-3xl;
+}
+
+/* Edit and Delete actions */
+.transactions-actions {
+    @apply flex items-center gap-3 whitespace-nowrap;
+}
+
+.transactions-actions button {
+    @apply cursor-pointer text-sm font-medium disabled:opacity-50;
+}
+
+/* Category selection */
+.transactions-categories {
+    @apply rounded-lg border border-gray-200 p-4;
+}
+
+.transactions-categories legend {
+    @apply px-1 text-sm font-medium text-gray-700;
+}
+
+.transactions-categories label {
+    @apply mb-2 flex cursor-pointer items-center gap-2 text-sm text-gray-700;
+}
+
+.transactions-categories input {
+    @apply accent-teal-700;
+}
+
+/* Edit Transaction panel */
+.transactions-edit-form {
+    @apply mt-6 grid grid-cols-1 gap-5 rounded-xl border border-gray-200 bg-gray-50 p-6 md:grid-cols-2;
+}
+
+.transactions-edit-form h3 {
+    @apply text-xl font-semibold text-teal-950 md:col-span-2;
+}
+
+.transactions-edit-form .form-field {
+    @apply flex flex-col;
+}
+
+.transactions-edit-form .form-input {
+    @apply bg-white;
+}
+
+.transactions-edit-form .transactions-categories {
+    @apply md:col-span-2;
+}
+
+/* Save and Cancel buttons */
+.transactions-form-actions {
+    @apply flex flex-wrap items-center gap-3 md:col-span-2;
+}
+
+.transactions-form-actions .btn-primary {
+    @apply w-auto min-w-36 cursor-pointer disabled:opacity-50;
+}
+
+.transactions-cancel {
+    @apply cursor-pointer rounded-lg border border-gray-300 px-4 py-3 text-sm font-medium hover:bg-gray-100 disabled:opacity-50;
+}
+
+/* Pagination layout */
+.transactions-pagination {
+    @apply mt-5 flex flex-wrap items-center justify-between gap-4;
+}
+
+.transactions-pagination p {
+    @apply text-sm text-gray-500;
+}
+
+.transactions-pagination-buttons {
+    @apply flex items-center gap-3 text-sm;
+}
+
+.transactions-pagination-buttons button {
+    @apply cursor-pointer rounded-lg border border-gray-300 px-3 py-2 font-medium hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40;
+}
