@@ -14,7 +14,6 @@ import com.example.budgettracker.dto.TransactionResponse;
 import com.example.budgettracker.model.Account;
 import com.example.budgettracker.model.Category;
 import com.example.budgettracker.model.Transaction;
-import com.example.budgettracker.model.TransactionType;
 import com.example.budgettracker.model.User;
 
 import java.math.BigDecimal;
@@ -29,17 +28,20 @@ public class TransactionService {
     private final AccountRepository accountRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+    private final AccountBalanceService accountBalanceService;
 
     public TransactionService(
             TransactionRepository transactionRepository,
             AccountRepository accountRepository,
             CategoryRepository categoryRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            AccountBalanceService accountBalanceService) {
 
         this.transactionRepository = transactionRepository;
         this.accountRepository = accountRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
+        this.accountBalanceService = accountBalanceService;
     }
 
     // Converts a transaction's categories into a set of category IDs.
@@ -105,16 +107,13 @@ public class TransactionService {
 
         transaction.setCategories(categories);
 
-        // Update the account balance
-        BigDecimal newBalance;
+        // Update the account balance using the shared service.
+        accountBalanceService.applyTransaction(
+                account,
+                request.getAmount(),
+                request.getTransactionType());
 
-        if (request.getTransactionType() == TransactionType.INCOME) {
-            newBalance = account.getBalance().add(request.getAmount());
-        } else {
-            newBalance = account.getBalance().subtract(request.getAmount());
-        }
-
-        account.setBalance(newBalance);
+        // Save the updated account balance.
         accountRepository.save(account);
 
         // Save the transaction
@@ -200,38 +199,24 @@ public class TransactionService {
         Account originalAccount = transaction.getAccount();
 
         // Reverse the original transaction's effect on the balance.
-        BigDecimal restoredBalance;
+        accountBalanceService.reverseTransaction(
+                originalAccount,
+                transaction.getAmount(),
+                transaction.getTransactionType());
 
-        if (transaction.getTransactionType() == TransactionType.INCOME) {
-            restoredBalance = originalAccount.getBalance()
-                    .subtract(transaction.getAmount());
-        } else {
-            restoredBalance = originalAccount.getBalance()
-                    .add(transaction.getAmount());
-        }
+        // Apply the updated transaction to the selected account.
+        // If the account hasn't changed, this updates the same Account object.
+        // If the account changed, this updates the new Account object.
+        accountBalanceService.applyTransaction(
+                newAccount,
+                request.getAmount(),
+                request.getTransactionType());
 
-        // Determine the balance to use for the updated transaction.
-        BigDecimal newBalance;
-
-        if (originalAccount.getId().equals(newAccount.getId())) {
-            newBalance = restoredBalance;
-        } else {
-            newBalance = newAccount.getBalance();
-        }
-
-        // Apply the updated transaction amount.
-        if (request.getTransactionType() == TransactionType.INCOME) {
-            newBalance = newBalance.add(request.getAmount());
-        } else {
-            newBalance = newBalance.subtract(request.getAmount());
-        }
-
-        // Update the account balances.
-        originalAccount.setBalance(restoredBalance);
-        newAccount.setBalance(newBalance);
-
+        // Save the original account's updated balance.
         accountRepository.save(originalAccount);
 
+        // If the transaction moved to another account,
+        // save the new account's updated balance as well.
         if (!originalAccount.getId().equals(newAccount.getId())) {
             accountRepository.save(newAccount);
         }
@@ -271,18 +256,12 @@ public class TransactionService {
         Account account = transaction.getAccount();
 
         // Reverse the transaction's effect on the account balance.
-        BigDecimal restoredBalance;
-
-        if (transaction.getTransactionType() == TransactionType.INCOME) {
-            restoredBalance = account.getBalance()
-                    .subtract(transaction.getAmount());
-        } else {
-            restoredBalance = account.getBalance()
-                    .add(transaction.getAmount());
-        }
+        accountBalanceService.reverseTransaction(
+                account,
+                transaction.getAmount(),
+                transaction.getTransactionType());
 
         // Save the restored account balance.
-        account.setBalance(restoredBalance);
         accountRepository.save(account);
 
         // Delete the transaction.

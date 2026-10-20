@@ -2,6 +2,7 @@
 package com.example.budgettracker.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,10 +19,16 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "transactions")
+@Table(name = "transactions", uniqueConstraints = {
+        //The combination of these two values cannot appear more than once in the transactions table.
+        @UniqueConstraint(name = "unique_recurring_scheduled_date", columnNames = {
+                "recurring_transaction_id",
+                "scheduled_date"
+        })
+})
 public class Transaction {
 
     @Id
@@ -49,12 +56,21 @@ public class Transaction {
     private TransactionType transactionType;
 
     @ManyToMany
-    @JoinTable(
-        name = "transaction_category",
-        joinColumns = @JoinColumn(name = "transaction_id"),
-        inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
+    @JoinTable(name = "transaction_category", 
+    joinColumns = @JoinColumn(name = "transaction_id"), 
+    inverseJoinColumns = @JoinColumn(name = "category_id"))
     private Set<Category> categories = new HashSet<>();
+
+    // Identifies the recurring schedule that generated this transaction.
+    // Null for manually created transactions.
+    @ManyToOne
+    @JoinColumn(name = "recurring_transaction_id")
+    private RecurringTransaction recurringTransaction;
+
+    // Stores the date this transaction was scheduled to occur.
+    // Null for manually created transactions.
+    @Column(name = "scheduled_date")
+    private LocalDate scheduledDate;
 
     protected Transaction() {
     }
@@ -128,5 +144,21 @@ public class Transaction {
 
     public void setCategories(Set<Category> categories) {
         this.categories = categories;
+    }
+
+    public RecurringTransaction getRecurringTransaction() {
+        return recurringTransaction;
+    }
+
+    public void setRecurringTransaction(RecurringTransaction recurringTransaction) {
+        this.recurringTransaction = recurringTransaction;
+    }
+
+    public LocalDate getScheduledDate() {
+        return scheduledDate;
+    }
+
+    public void setScheduledDate(LocalDate scheduledDate) {
+        this.scheduledDate = scheduledDate;
     }
 }

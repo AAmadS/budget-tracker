@@ -1,6 +1,7 @@
 package com.example.budgettracker.repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,11 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     // Finds a transaction only if it belongs to the specified user.
     Optional<Transaction> findByIdAndUser_Id(Long transactionId, Long userId);
+
+    // Checks whether a matching record exists based on RTId and scheduledDate
+    boolean existsByRecurringTransaction_IdAndScheduledDate(
+            Long recurringTransactionId,
+            LocalDate scheduledDate);
 
     // Adds expenses assigned to a category within a date range.
     @Query("""
