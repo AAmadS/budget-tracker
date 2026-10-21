@@ -139,12 +139,19 @@ public class RecurringTransactionService {
             Long recurringTransactionId,
             RecurringTransactionRequest request) {
 
-        // Find the recurring transaction and verify it belongs to the user.
+        // Lock the recurring schedule while it is being updated.
         RecurringTransaction recurringTransaction = recurringTransactionRepository
-                .findByIdAndUser_Id(recurringTransactionId, userId)
+                .findWithLockById(recurringTransactionId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Recurring transaction not found"));
+
+        // Verify that the schedule belongs to the current user.
+        if (!recurringTransaction.getUser().getId().equals(userId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Recurring transaction not found");
+        }
 
         // Validate required fields.
         if (request.getAccountId() == null ||
@@ -239,47 +246,83 @@ public class RecurringTransactionService {
     }
 
     @Transactional
-    public void generateRecurringTransaction(
-            RecurringTransaction recurringTransaction,
-            LocalDate scheduledDate) {
+    public void generateRecurringTransaction(Long recurringTransactionId) {
 
-        // Check whether this scheduled occurrence has already
-        // been generated to avoid creating duplicates.
-        if (occurrenceAlreadyExists(recurringTransaction, scheduledDate)) {
+        // Lock the recurring schedule to prevent two processes
+        // from generating the same occurrence simultaneously.
+        RecurringTransaction recurringTransaction = recurringTransactionRepository
+                .findWithLockById(recurringTransactionId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Recurring transaction not found"));
+
+        // Get the next scheduled date.
+        LocalDate scheduledDate = recurringTransaction.getNextOccurrence();
+
+        // Skip inactive schedules or schedules that are not due yet.
+        if (!recurringTransaction.isActive()
+                || scheduledDate == null
+                || scheduledDate.isAfter(LocalDate.now())) {
             return;
         }
 
-        // Get the account associated with the recurring transaction.
-        Account account = recurringTransaction.getAccount();
+        // Lock the account before changing its balance.
+        Account account = accountRepository
+                .findWithLockByIdAndUser_Id(
+                        recurringTransaction.getAccount().getId(),
+                        recurringTransaction.getUser().getId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Account not found"));
 
-        // Create an actual transaction using the recurring schedule.
-        Transaction transaction = new Transaction(
-                recurringTransaction.getUser(),
-                account,
-                scheduledDate.atStartOfDay(),
-                recurringTransaction.getAmount(),
-                recurringTransaction.getDescription(),
-                recurringTransaction.getTransactionType());
+        // Check whether this occurrence was already generated.
+        boolean alreadyExists = occurrenceAlreadyExists(
+                recurringTransaction,
+                scheduledDate);
 
-        // Copy the categories from the recurring schedule.
-        transaction.setCategories(
-                new HashSet<>(recurringTransaction.getCategories()));
+        if (!alreadyExists) {
 
-        // Link the generated transaction to its recurring schedule.
-        transaction.setRecurringTransaction(recurringTransaction);
-        transaction.setScheduledDate(scheduledDate);
+            // Create an actual transaction from the recurring schedule.
+            Transaction transaction = new Transaction(
+                    recurringTransaction.getUser(),
+                    account,
+                    scheduledDate.atStartOfDay(),
+                    recurringTransaction.getAmount(),
+                    recurringTransaction.getDescription(),
+                    recurringTransaction.getTransactionType());
 
-        // Save the generated transaction.
-        transactionRepository.save(transaction);
+            // Copy the categories from the recurring schedule.
+            transaction.setCategories(
+                    new HashSet<>(recurringTransaction.getCategories()));
 
-        // Update the account balance using our shared service.
-        accountBalanceService.applyTransaction(
-                account,
-                recurringTransaction.getAmount(),
-                recurringTransaction.getTransactionType());
+            // Link the transaction to its recurring schedule.
+            transaction.setRecurringTransaction(recurringTransaction);
+            transaction.setScheduledDate(scheduledDate);
 
-        // Save the updated account balance.
-        accountRepository.save(account);
+            // Save the generated transaction.
+            transactionRepository.save(transaction);
+
+            // Update the account balance.
+            accountBalanceService.applyTransaction(
+                    account,
+                    recurringTransaction.getAmount(),
+                    recurringTransaction.getTransactionType());
+
+            // Save the updated account.
+            accountRepository.save(account);
+        }
+
+        // Calculate the next occurrence based on the original start date.
+        LocalDate nextOccurrence = getFollowingOccurrence(
+                recurringTransaction.getStartDate(),
+                scheduledDate,
+                recurringTransaction.getFrequency());
+
+        // Advance the schedule so this occurrence is not processed again.
+        recurringTransaction.setNextOccurrence(nextOccurrence);
+
+        // Save the updated recurring schedule.
+        recurringTransactionRepository.save(recurringTransaction);
     }
 
     private LocalDate getFollowingOccurrence(

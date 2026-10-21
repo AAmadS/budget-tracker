@@ -9,6 +9,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.example.budgettracker.repository.AccountRepository;
 import com.example.budgettracker.repository.UserRepository;
+import com.example.budgettracker.repository.TransactionRepository;
+import com.example.budgettracker.repository.RecurringTransactionRepository;
+
+import jakarta.transaction.Transactional;
+
 import com.example.budgettracker.dto.CreateAccountRequest;
 import com.example.budgettracker.dto.UpdateAccountRequest;
 import com.example.budgettracker.dto.AccountResponse;
@@ -21,12 +26,18 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
+    private final TransactionRepository transactionRepository;
+    private final RecurringTransactionRepository recurringTransactionRepository;
 
     public AccountService(
             AccountRepository accountRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            TransactionRepository transactionRepository,
+            RecurringTransactionRepository recurringTransactionRepository) {
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
+        this.transactionRepository = transactionRepository;
+        this.recurringTransactionRepository = recurringTransactionRepository;
     }
 
     public AccountResponse createAccount(Long userId, CreateAccountRequest request) {
@@ -76,12 +87,16 @@ public class AccountService {
                 account.getBalance())).toList();
     }
 
+    @Transactional
     public AccountResponse updateAccount(
             Long userId,
             Long accountId,
             UpdateAccountRequest request) {
 
-        Account account = accountRepository.findByIdAndUser_Id(accountId, userId)
+        // Find the account, verify ownership, and lock it
+        // until the database transaction completes.
+        Account account = accountRepository
+                .findWithLockByIdAndUser_Id(accountId, userId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Account not found"));
 
@@ -111,10 +126,22 @@ public class AccountService {
                 savedAccount.getBalance());
     }
 
+    @Transactional
     public void deleteAccount(Long userId, Long accountId) {
-        Account account = accountRepository.findByIdAndUser_Id(accountId, userId)
+
+        Account account = accountRepository
+                .findWithLockByIdAndUser_Id(accountId, userId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Account not found"));
+
+        boolean hasTransactions = transactionRepository.existsByAccount_Id(accountId);
+        boolean hasRecurringSchedules = recurringTransactionRepository.existsByAccount_Id(accountId);
+
+        if (hasTransactions || hasRecurringSchedules) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Cannot delete an account with existing transactions or recurring schedules");
+        }
 
         accountRepository.delete(account);
     }

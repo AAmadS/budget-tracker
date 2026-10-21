@@ -31,4 +31,12 @@ public interface RecurringTransactionRepository
     // the same recurring schedule at the same time.
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<RecurringTransaction> findWithLockById(Long id);
+
+    boolean existsByAccount_Id(Long accountId);
+
+    // Find active recurring schedules belonging to a user
+    // whose next occurrence is today or earlier.
+    List<RecurringTransaction> findByUser_IdAndActiveTrueAndNextOccurrenceLessThanEqual(
+            Long userId,
+            LocalDate date);
 }

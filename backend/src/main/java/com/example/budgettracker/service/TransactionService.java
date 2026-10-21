@@ -77,8 +77,10 @@ public class TransactionService {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "User not found"));
 
-        Account account = accountRepository.findByIdAndUser_Id(
-                request.getAccountId(), userId)
+        // Find the account, verify ownership, and lock it
+        // until the database transaction finishes.
+        Account account = accountRepository
+                .findWithLockByIdAndUser_Id(request.getAccountId(), userId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Account not found"));
 
@@ -155,9 +157,11 @@ public class TransactionService {
             Long transactionId,
             TransactionRequest request) {
 
-        // Find the transaction and verify ownership.
+        // Find the transaction, verify ownership, and lock it.
+        // Other requests trying to lock this transaction must wait
+        // until the current database transaction finishes.
         Transaction transaction = transactionRepository
-                .findByIdAndUser_Id(transactionId, userId)
+                .findWithLockByIdAndUser_Id(transactionId, userId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Transaction not found"));
 
@@ -246,14 +250,21 @@ public class TransactionService {
     @Transactional
     public void deleteTransaction(Long userId, Long transactionId) {
 
-        // Find the transaction and verify ownership.
+        // Find the transaction, verify ownership, and lock it.
+        // Prevent another request from editing or deleting this
+        // transaction until the current database transaction finishes.
         Transaction transaction = transactionRepository
-                .findByIdAndUser_Id(transactionId, userId)
+                .findWithLockByIdAndUser_Id(transactionId, userId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Transaction not found"));
 
         // Get the account associated with the transaction.
-        Account account = transaction.getAccount();
+        // Lock the account before updating its balance.
+        Account account = accountRepository
+                .findWithLockByIdAndUser_Id(transaction.getAccount().getId(), userId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Account not found"));
 
         // Reverse the transaction's effect on the account balance.
         accountBalanceService.reverseTransaction(

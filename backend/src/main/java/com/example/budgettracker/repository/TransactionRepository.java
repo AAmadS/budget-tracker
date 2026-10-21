@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.example.budgettracker.model.Transaction;
 import com.example.budgettracker.model.TransactionType;
+
+import jakarta.persistence.LockModeType;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
@@ -25,6 +28,15 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     boolean existsByRecurringTransaction_IdAndScheduledDate(
             Long recurringTransactionId,
             LocalDate scheduledDate);
+
+    // Finds a transaction belonging to the user and locks it
+    // until the current database transaction completes.
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    Optional<Transaction> findWithLockByIdAndUser_Id(
+            Long transactionId,
+            Long userId);
+
+    boolean existsByAccount_Id(Long accountId);
 
     // Adds expenses assigned to a category within a date range.
     @Query("""
